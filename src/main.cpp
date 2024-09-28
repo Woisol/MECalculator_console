@@ -15,26 +15,32 @@ int main(int argc, char* argv[]) {
 		initColor();
 		// system("chcp 65001");
 
-	start:
+		bool back = false;
+		// start:
 
-		// create_centered_window("欢迎使用计算器！");
-		// while (true)
-		// {
+			// create_centered_window("欢迎使用计算器！");
+			// while (true)
+			// {
 
-		switch (Page_Welcome())
+		while (!back)
 		{
-		case 0:
-			Page_Multinomial();
-			break;
-		case 1:
-			Page_Expression("算法表达式求值计算器");
-			break;
-		default:
-			clear();
-			mvprintw(10, 1, "Unexpect error");
-			refresh();
+			switch (Page_Welcome())
+			{
+			case 0:
+				back = Page_Multinomial();
+				break;
+			case 1:
+				Page_Expression("算法表达式求值计算器");
+				back = true;
+				break;
+			default:
+				clear();
+				mvprintw(10, 1, "Unexpect error");
+				refresh();
+			}
+			// }
+
 		}
-		// }
 		endwin();              // 结束ncurses模式
 	}
 	return 0;

@@ -11,7 +11,7 @@ class Multinomial
 public:
 	static int initNum;
 	void init(stringstream input) {
-		// if (input.str().empty())return;
+		if (input.str().empty())return;
 		int n;
 		int a, b;
 		input >> n;
@@ -62,7 +62,7 @@ public:
 			else
 			{
 				it->first -= p.first;
-				if (it->second == 0)
+				if (it->first == 0)
 				{
 					res.multinomialIndicator.erase(it);
 				}
@@ -74,7 +74,7 @@ public:
 		return res;
 	}
 	string print() const {
-		string res;
+		string res = "";
 		for (auto p : multinomialIndicator)
 		{
 			if (p.first == 0)continue;
@@ -83,6 +83,7 @@ public:
 			else res += (p.first == 1 ? "" : to_string(p.first)) + "x^" + to_string(p.second) + "+";
 
 		}
+		if (res.empty())return "0";
 		res.pop_back();
 		return res;
 	}

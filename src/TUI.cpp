@@ -46,6 +46,7 @@ void SelectOption(string title, int index) {
 int Win_Select(string title, string description, vector<string> options) {
 	char ch;
 	const int optionsSize = options.size();
+	selectOption %= optionsSize;
 	while (1)
 	{
 		clear();
@@ -147,9 +148,9 @@ stringstream Dialog_Input(char* title, bool (*inputCheckFunc)(stringstream&)) {
 	stringstream checkStream = stringstream(input);
 	// !艹不能直接存储……不然>>了就回不来了……
 	// !额不过还是必须先定义一个不然“非常量引用的初始值必须为左值”
-	if ((*inputCheckFunc)(stringstream(input)))
-		if ((*inputCheckFunc)(checkStream))
-			return stringstream(input);
+	// if ((*inputCheckFunc)(stringstream(input)))
+	if ((*inputCheckFunc)(checkStream))
+		return stringstream(input);
 	// ！所以其实原因在于stringstream不能拷贝构造…………
 	Dialog_Error("输入错误！", "输入的数据有问题，再试试吧！");
 	// !wok忘记C++和js'和"是不同的了……
@@ -213,13 +214,14 @@ int Page_Welcome() {
 	// !可以直接用类似js对象的形式隐式转换成vector！wok这下方便了
 }
 
-void Page_Multinomial() {
-	bool back = false;
-	while (!back)
+int Page_Multinomial() {
+	// bool back = false;
+	// while (!back)
+	while (true)
 	{
 		// const string description = ();
 		vector<string> options;
-		if (Multinomial::initNum == 2) options = { "查看多项式a,b","计算多项式a+b", "计算多项式a-b", "退出" };
+		if (Multinomial::initNum == 2) options = { "查看多项式a,b","计算多项式a+b", "计算多项式a-b", "返回上一级", "退出" };
 		else options = { "输入多项式" };
 		switch (Win_Select(" 一元稀疏多项式 ", Multinomial::initNum == 0 ? " 现在还没有输入多项式，请选择输入 " : "当前输入了" + to_string(Multinomial::initNum) + "个多项式，最多只能输入2个，请选择操作: ", options))
 		{
@@ -253,17 +255,15 @@ void Page_Multinomial() {
 			}
 			break;
 		case 3:
-			back = true;
+			// back = true;
+			return 0;
+		case 4:
+			return 1;
 		}
 	}
 }
 
 void Page_Expression(const std::string& tilte) {
-	clear();
-	setColor(2);
-	box(stdscr, 15, 15);
-	mvprintw(WIN_HEIGHT / 2 - 2, WIN_WIDTH / 2 - strlen(tilte.c_str()) / 2, tilte.c_str());
-	mvprintw(WIN_HEIGHT / 2, 10, "  请输入：");
 	refresh();
 }
 // void create_centered_window(const char* message) {
