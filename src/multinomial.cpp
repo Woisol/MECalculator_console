@@ -11,6 +11,7 @@ class Multinomial
 public:
 	static int initNum;
 	void init(stringstream input) {
+		// if (input.str().empty())return;
 		int n;
 		int a, b;
 		input >> n;

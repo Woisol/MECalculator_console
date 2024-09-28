@@ -17,6 +17,9 @@ void initColor() {
 		init_pair(2, COLOR_BLACK, COLOR_YELLOW);	// @黑底黄字
 		init_pair(3, COLOR_YELLOW, COLOR_BLACK);	// 黄底黑字
 		init_pair(4, COLOR_BLACK, COLOR_WHITE);		// ##黑底白字
+		init_pair(5, COLOR_RED, COLOR_WHITE);		// ！红底白字
+		init_pair(6, COLOR_WHITE, COLOR_RED);		// ！白底红字
+
 	}
 	else
 	{
@@ -71,7 +74,7 @@ int Win_Select(string title, string description, vector<string> options) {
 		else if (ch == 3)selectOption = (selectOption - 1 > -1 ? selectOption - 1 : optionsSize - 1) % optionsSize;
 		// !KEY_UP和KEY_DOWN好像不对……
 		else if (ch > 48 && ch <= 48 + optionsSize) { return ch - 49; }
-		else if (ch == 10) { return selectOption; }
+		else if (ch == 10 || ch == ' ') { return selectOption; }
 
 		// mvprintw(WIN_HEIGHT / 2 + 3, 10, "Mode:	");
 		// move(WIN_HEIGHT /2 + 3, 10)
@@ -92,8 +95,34 @@ int Win_Select(string title, string description, vector<string> options) {
 		refresh();             // 刷新屏幕以显示内容
 	}
 }
+// !难以像js那样灵活的把这些放到另一个文件……
+void Dialog_Info(string title, vector<string> info) {
+	clear();
+	setColor(2);
+	box(stdscr, 15, 15);
+	mvprintw(WIN_HEIGHT / 2 - 2, WIN_WIDTH / 2 - strlen(title.c_str()) / 2, title.c_str());
+	setColor();
+	for (auto i = 0; i < info.size(); i++)
+	{
+		mvprintw(WIN_HEIGHT / 2 + i, 10, info[i].c_str());
+	}
+	mvprintw(WIN_HEIGHT - 2, WIN_WIDTH / 2 - 6, "按任意键返回");
+	refresh();
+	getch();
+}
+void Dialog_Error(string title, string error) {
+	clear();
+	setColor(6);
+	box(stdscr, 15, 15);
+	mvprintw(WIN_HEIGHT / 2 - 2, WIN_WIDTH / 2 - strlen(title.c_str()) / 2, title.c_str());
+	setColor(5);
+	mvprintw(WIN_HEIGHT / 2, WIN_WIDTH / 2 - strlen(error.c_str()) / 2, error.c_str());
+	mvprintw(WIN_HEIGHT - 2, WIN_WIDTH / 2 - 6, "按任意键返回");
+	refresh();
+	getch();
+}
 
-stringstream Dialog_Input(char* title) {
+stringstream Dialog_Input(char* title, bool (*inputCheckFunc)(stringstream&)) {
 	clear();
 	echo();
 	setColor(2);
@@ -115,23 +144,18 @@ stringstream Dialog_Input(char* title) {
 	// }
 	getnstr(input, 100);
 	// !内置的不更香……
-	return stringstream(input);
+	stringstream checkStream = stringstream(input);
+	// !艹不能直接存储……不然>>了就回不来了……
+	// !额不过还是必须先定义一个不然“非常量引用的初始值必须为左值”
+	if ((*inputCheckFunc)(stringstream(input)))
+		if ((*inputCheckFunc)(checkStream))
+			return stringstream(input);
+	// ！所以其实原因在于stringstream不能拷贝构造…………
+	Dialog_Error("输入错误！", "输入的数据有问题，再试试吧！");
+	// !wok忘记C++和js'和"是不同的了……
+	return stringstream();
 	// !麻了这里有点绕了……
 	// return input;
-}
-void Dialog_Info(string title, vector<string> info) {
-	clear();
-	setColor(2);
-	box(stdscr, 15, 15);
-	mvprintw(WIN_HEIGHT / 2 - 2, WIN_WIDTH / 2 - strlen(title.c_str()) / 2, title.c_str());
-	setColor();
-	for (auto i = 0; i < info.size(); i++)
-	{
-		mvprintw(WIN_HEIGHT / 2 + i, 10, info[i].c_str());
-	}
-	mvprintw(WIN_HEIGHT - 2, WIN_WIDTH / 2 - 6, "按任意键返回");
-	refresh();
-	getch();
 }
 
 int Multinomial::initNum = 0;
@@ -203,7 +227,16 @@ void Page_Multinomial() {
 			if (Multinomial::initNum == 2)
 				Dialog_Info("a,b多项式如下：", { "a = " + multinomials[0].print(),"b = " + multinomials[1].print() });
 			else
-				multinomials[Multinomial::initNum].init(Dialog_Input("请输入多项式项数n与其系数指数: "));
+				multinomials[Multinomial::initNum].init(Dialog_Input("请输入多项式项数n与其系数指数: ", [](stringstream& sstream) {
+				int n, count;
+				char inputChar;
+				sstream >> n;
+				while (sstream >> inputChar)
+				{
+					count++;
+				}
+				return count == 2 * n;
+					}));
 			break;
 		case 1:
 			if (Multinomial::initNum == 2)
