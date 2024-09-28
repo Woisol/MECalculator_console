@@ -1,3 +1,5 @@
+// td 添加test
+// td 分成.h而不是全部用cpp
 #include <iostream>
 #include"TUI.cpp"
 using namespace std;
@@ -30,8 +32,7 @@ int main(int argc, char* argv[]) {
 				back = Page_Multinomial();
 				break;
 			case 1:
-				Page_Expression("算法表达式求值计算器");
-				back = true;
+				back = Page_Expression();
 				break;
 			case 2:
 				// Page_About();

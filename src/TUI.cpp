@@ -4,6 +4,7 @@
 #include<vector>
 #include "../lib/include/curses.h"
 #include "multinomial.cpp"
+#include"expression.cpp"
 using namespace std;
 #define WIN_WIDTH 58
 #define WIN_HEIGHT 22
@@ -240,13 +241,18 @@ int Page_Multinomial() {
 		switch (Multinomial::initNum)
 		{
 		case 0:
-			switch (Win_Select(" 一元稀疏多项式 ", "现在还没有输入多项式，请选择输入", { "输入多项式" }))
+			switch (Win_Select(" 一元稀疏多项式 ", "现在还没有输入多项式，请选择输入", { "输入多项式","返回上一级","退出" }))
 			{
 			case 0:
-			default:
 				multinomials[Multinomial::initNum].init(Dialog_Input("请输入多项式项数n与其系数指数: ", multinomialInputCheck));
 				// multinomials[Multinomial::initNum].init(Dialog_Input("请输入第二个多项式项数n与其系数指数: ", multinomialInputCheck));
 				// !不行提前预定如果出错会导致奇怪的文案……
+				break;
+			case 1:
+				return 0;
+			case 2:
+				return 1;
+			default:
 				break;
 			}
 		case 1:
@@ -377,8 +383,39 @@ int Page_Multinomial() {
 	}
 }
 
-void Page_Expression(const std::string& tilte) {
-	refresh();
+int Page_Expression() {
+	while (true)
+	{
+		if (expression.empty())
+			switch (Win_Select("算法表达式求值计算器", "当前未输入表达式，请选择输入：", { "输入表达式并计算", "返回上一级", "退出" }))
+			{
+			case 0:
+				expression.init(Dialog_Input("请输入算法表达式：", [](stringstream& sstream) { return true; }));
+				// !额[&]多个&就不给传唤了……
+				Dialog_Info(expression.getExpression() + " = ", { to_string(expression.calculate()) });
+				break;
+			case 1:
+				return 0;
+			case 2:
+				return 1;
+			}
+		else
+			switch (Win_Select("算法表达式求值计算器", "表达式已输入，请选择操作：", { "再次求值",  "重新输入", "返回上一级", "退出" }))
+			{
+			case 0:
+				int x;
+				Dialog_Info(expression.getExpression() + " = ", { to_string(expression.calculate()) });
+				break;
+			case 1:
+				expression.init(Dialog_Input("请重新输入算法表达式：", [](stringstream& sstream) { return true; }));
+				Dialog_Info(expression.getExpression() + " = ", { to_string(expression.calculate()) });
+				break;
+			case 2:
+				return 0;
+			case 3:
+				return 1;
+			}
+	}
 }
 // void create_centered_window(const char* message) {
 // 	int height = 10;  // 窗口高度
