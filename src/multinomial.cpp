@@ -2,6 +2,7 @@
 #include<sstream>
 #include <vector>
 #include <algorithm>
+#include<cmath>
 // #include"TUI.cpp"
 // !TUI.cpp包含自身……
 using namespace std;
@@ -86,6 +87,54 @@ public:
 		sort(res.multinomialIndicator.begin(), res.multinomialIndicator.end(), [](const pair<int, int>& p, const pair<int, int>& q) {
 			return p.second > q.second;
 			});
+		return res;
+	}
+	Multinomial operator*(const Multinomial& other) const {
+		Multinomial res;
+		for (auto p : multinomialIndicator)
+		{
+			for (auto q : other.multinomialIndicator)
+			{
+				res.multinomialIndicator.push_back(make_pair(p.first * q.first, p.second + q.second));
+			}
+		}
+		sort(res.multinomialIndicator.begin(), res.multinomialIndicator.end(), [](const pair<int, int>& p, const pair<int, int>& q) {
+			return p.second > q.second;
+			});
+		for (auto p = res.multinomialIndicator.begin(); (p + 1) != res.multinomialIndicator.end(); )
+		{
+			if (p->second == (p + 1)->second)
+			{
+				p->first += (p + 1)->first;
+				res.multinomialIndicator.erase(p + 1);
+			}
+			else
+				p++;
+		}
+
+		return res;
+	}
+	int calculate(int x) const {
+		int res = 0;
+		for (auto p : multinomialIndicator)
+		{
+			res += p.first * pow(x, p.second);
+		}
+		return res;
+	}
+	Multinomial derivative() {
+		Multinomial res;
+		for (auto p : multinomialIndicator)
+		{
+			if (p.second > -1)
+			{
+				res.multinomialIndicator.push_back(make_pair(p.first * p.second, p.second - 1));
+			}
+			else if (p.second == -1)
+			{
+				res.multinomialIndicator.push_back(make_pair(p.first, 0));
+			}
+		}
 		return res;
 	}
 	string print() const {
