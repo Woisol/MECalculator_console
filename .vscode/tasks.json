@@ -1,0 +1,35 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++.exe 生成活动文件",
+            "command": "d:\\Coding\\mingw64\\bin\\g++.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                // !麻了是在这里指定编译的文件的……${file}值得就是当前活动文件
+                "${workspaceFolder}\\src\\main.cpp",
+                "-o",
+                "${workspaceFolder}\\out\\Calculator_TUI.exe",
+                "${workspaceFolder}\\lib\\include\\pdcurses.a",
+                "-finput-charset=gbk",
+                "-fexec-charset=gbk",
+                // "${workspaceFolder}\\src\\main.cpp",
+                // "-l",
+                // "pdcurses.a"
+            ],
+            "options": {
+                "cwd": "d:\\Coding\\mingw64\\bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "调试器生成的任务。"
+        }
+    ],
+    "version": "2.0.0"
+}
