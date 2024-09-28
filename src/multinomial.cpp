@@ -12,6 +12,7 @@ public:
 	static int initNum;
 	void init(stringstream input) {
 		if (input.str().empty())return;
+		if (multinomialIndicator.size() > 0)multinomialIndicator.clear();
 		int n;
 		int a, b;
 		input >> n;
@@ -57,7 +58,7 @@ public:
 				});
 			if (it == res.multinomialIndicator.end())
 			{
-				res.multinomialIndicator.push_back(p);
+				res.multinomialIndicator.push_back(make_pair(-p.first, p.second));
 			}
 			else
 			{
@@ -74,18 +75,20 @@ public:
 		return res;
 	}
 	string print() const {
-		string res = "";
+		string outputString = "";
 		for (auto p : multinomialIndicator)
 		{
 			if (p.first == 0)continue;
-			if (p.second == 1)res += (p.first == 1 ? "" : to_string(p.first)) + "x" + "+";
-			else if (p.second == 0) res += (p.first == 1 ? "" : to_string(p.first)) + "+";
-			else res += (p.first == 1 ? "" : to_string(p.first)) + "x^" + to_string(p.second) + "+";
-
+			if (p.second == 1)outputString += (p.first == 1 ? "" : p.first == -1 ? "-" : to_string(p.first)) + "x" + "+";
+			else if (p.second == 0) outputString += to_string(p.first) + "+";
+			else outputString += (p.first == 1 ? "" : p.first == -1 ? "-" : to_string(p.first)) + "x^" + to_string(p.second) + "+";
 		}
-		if (res.empty())return "0";
-		res.pop_back();
-		return res;
+		if (outputString.empty())return "0";
+		outputString.pop_back();
+		return outputString;
+	}
+	void clear() {
+		multinomialIndicator.clear();
 	}
 };
 // Multinomial::initNum = 0;

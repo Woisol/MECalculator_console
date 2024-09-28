@@ -158,7 +158,17 @@ stringstream Dialog_Input(char* title, bool (*inputCheckFunc)(stringstream&)) {
 	// !麻了这里有点绕了……
 	// return input;
 }
+bool multinomialInputCheck(stringstream& sstream) {
+	int n, count;
+	int input;
+	sstream >> n;
+	while (sstream >> input)
+	{
+		count++;
+	}
+	return count == 2 * n;
 
+}
 int Multinomial::initNum = 0;
 int Page_Welcome() {
 	// while (1)
@@ -221,7 +231,7 @@ int Page_Multinomial() {
 	{
 		// const string description = ();
 		vector<string> options;
-		if (Multinomial::initNum == 2) options = { "查看多项式a,b","计算多项式a+b", "计算多项式a-b", "返回上一级", "退出" };
+		if (Multinomial::initNum == 2) options = { "查看多项式a,b","计算多项式a+b", "计算多项式a-b","重新输入", "返回上一级", "退出" };
 		else options = { "输入多项式" };
 		switch (Win_Select(" 一元稀疏多项式 ", Multinomial::initNum == 0 ? " 现在还没有输入多项式，请选择输入 " : "当前输入了" + to_string(Multinomial::initNum) + "个多项式，最多只能输入2个，请选择操作: ", options))
 		{
@@ -229,16 +239,7 @@ int Page_Multinomial() {
 			if (Multinomial::initNum == 2)
 				Dialog_Info("a,b多项式如下：", { "a = " + multinomials[0].print(),"b = " + multinomials[1].print() });
 			else
-				multinomials[Multinomial::initNum].init(Dialog_Input("请输入多项式项数n与其系数指数: ", [](stringstream& sstream) {
-				int n, count;
-				char inputChar;
-				sstream >> n;
-				while (sstream >> inputChar)
-				{
-					count++;
-				}
-				return count == 2 * n;
-					}));
+				multinomials[Multinomial::initNum].init(Dialog_Input("请输入多项式项数n与其系数指数: ", multinomialInputCheck));
 			break;
 		case 1:
 			if (Multinomial::initNum == 2)
@@ -255,9 +256,32 @@ int Page_Multinomial() {
 			}
 			break;
 		case 3:
+
+			switch (Win_Select("重新输入", "需要重新输入哪些多项式？", { "第一个多项式", "第二个多项式","小孩子才做选择()","算了算了，我不想了" }))
+				// !艹怎么突然就可爱风了……
+			{
+			case 0:
+				Multinomial::initNum = 1;
+				multinomials[0].init(Dialog_Input("请输入第一个多项式项数n与其系数指数: ", multinomialInputCheck));
+				break;
+			case 1:
+				Multinomial::initNum = 1;
+				multinomials[1].init(Dialog_Input("请输入第二个多项式项数n与其系数指数: ", multinomialInputCheck));
+				break;
+			case 2:
+				Multinomial::initNum = 0;
+				multinomials[0].init(Dialog_Input("请输入第一个多项式项数n与其系数指数: ", multinomialInputCheck));
+				multinomials[1].init(Dialog_Input("请输入第二个多项式项数n与其系数指数: ", multinomialInputCheck));
+				break;
+			default:
+				break;
+				// Dialog_Error("Error", "Unknown Error");
+			}
+			break;
+		case 4:
 			// back = true;
 			return 0;
-		case 4:
+		case 5:
 			return 1;
 		}
 	}
