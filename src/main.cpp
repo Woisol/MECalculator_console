@@ -33,6 +33,12 @@ int main(int argc, char* argv[]) {
 				Page_Expression("算法表达式求值计算器");
 				back = true;
 				break;
+			case 2:
+				// Page_About();
+				break;
+			case 3:
+				back = true;
+				break;
 			default:
 				clear();
 				mvprintw(10, 1, "Unexpect error");

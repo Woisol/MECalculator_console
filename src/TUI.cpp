@@ -47,6 +47,7 @@ int Win_Select(string title, string description, vector<string> options) {
 	char ch;
 	const int optionsSize = options.size();
 	selectOption %= optionsSize;
+	title = " " + title + " ";
 	while (1)
 	{
 		clear();
@@ -101,6 +102,7 @@ void Dialog_Info(string title, vector<string> info) {
 	clear();
 	setColor(2);
 	box(stdscr, 15, 15);
+	title = " " + title + " ";
 	mvprintw(WIN_HEIGHT / 2 - 2, WIN_WIDTH / 2 - strlen(title.c_str()) / 2, title.c_str());
 	setColor();
 	for (auto i = 0; i < info.size(); i++)
@@ -115,6 +117,7 @@ void Dialog_Error(string title, string error) {
 	clear();
 	setColor(6);
 	box(stdscr, 15, 15);
+	title = " " + title + " ";
 	mvprintw(WIN_HEIGHT / 2 - 2, WIN_WIDTH / 2 - strlen(title.c_str()) / 2, title.c_str());
 	setColor(5);
 	mvprintw(WIN_HEIGHT / 2, WIN_WIDTH / 2 - strlen(error.c_str()) / 2, error.c_str());
@@ -123,12 +126,13 @@ void Dialog_Error(string title, string error) {
 	getch();
 }
 
-stringstream Dialog_Input(char* title, bool (*inputCheckFunc)(stringstream&)) {
+stringstream Dialog_Input(string title, bool (*inputCheckFunc)(stringstream&)) {
 	clear();
 	echo();
 	setColor(2);
 	box(stdscr, 15, 15);
-	mvprintw(WIN_HEIGHT / 2 - 2, WIN_WIDTH / 2 - strlen(title) / 2, title);
+	title = " " + title + " ";
+	mvprintw(WIN_HEIGHT / 2 - 2, WIN_WIDTH / 2 - strlen(title.c_str()) / 2, title.c_str());
 	move(WIN_HEIGHT / 2, 10);
 	setColor();
 	refresh();
@@ -220,7 +224,7 @@ int Page_Welcome() {
 
 	// }
 
-	return Win_Select("欢迎使用本软件!", " 使用上下方向键选择一个模式: ", { "一元稀疏多项式 ", "算法表达式求值" });
+	return Win_Select("欢迎使用本软件!", " 使用上下方向键选择一个模式: ", { "一元稀疏多项式 ", "算法表达式求值","关于此软件作者","退出" });
 	// !可以直接用类似js对象的形式隐式转换成vector！wok这下方便了
 }
 
@@ -233,26 +237,30 @@ int Page_Multinomial() {
 		vector<string> options;
 		if (Multinomial::initNum == 2) options = { "查看多项式a,b","计算多项式a+b", "计算多项式a-b","重新输入", "返回上一级", "退出" };
 		else options = { "输入多项式" };
-		switch (Win_Select(" 一元稀疏多项式 ", Multinomial::initNum == 0 ? " 现在还没有输入多项式，请选择输入 " : "当前输入了" + to_string(Multinomial::initNum) + "个多项式，最多只能输入2个，请选择操作: ", options))
+		switch (Win_Select(" 一元稀疏多项式 ", Multinomial::initNum == 0 ? "现在还没有输入多项式，请选择输入" : "当前输入了" + to_string(Multinomial::initNum) + "个多项式，最多只能输入2个，请选择操作:", options))
 		{
 		case 0:
 			if (Multinomial::initNum == 2)
 				Dialog_Info("a,b多项式如下：", { "a = " + multinomials[0].print(),"b = " + multinomials[1].print() });
 			else
+			{
 				multinomials[Multinomial::initNum].init(Dialog_Input("请输入多项式项数n与其系数指数: ", multinomialInputCheck));
+				// multinomials[Multinomial::initNum].init(Dialog_Input("请输入第二个多项式项数n与其系数指数: ", multinomialInputCheck));
+				// !不行提前预定如果出错会导致奇怪的文案……
+			}
 			break;
 		case 1:
 			if (Multinomial::initNum == 2)
 			{
 				res = multinomials[0] + multinomials[1];
-				Dialog_Info("a + b = ", { res.print() });
+				Dialog_Info(multinomials[0].print() + " + " + multinomials[1].print() + " =", { res.print() });
 			}
 			break;
 		case 2:
 			if (Multinomial::initNum == 2)
 			{
 				res = multinomials[0] - multinomials[1];
-				Dialog_Info("a - b = ", { res.print() });
+				Dialog_Info(multinomials[0].print() + " - " + multinomials[1].print() + " =", { res.print() });
 			}
 			break;
 		case 3:

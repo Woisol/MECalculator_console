@@ -23,6 +23,20 @@ public:
 			multinomialIndicator.push_back(make_pair(a, b));
 			// multinomialIndicator.push_back(make_pair(indicators[i * 2], indicators[i * 2 + 1]));
 		}
+		sort(multinomialIndicator.begin(), multinomialIndicator.end(), [](const pair<int, int>& p, const pair<int, int>& q) {
+			return p.second > q.second;
+			});
+		for (auto p = multinomialIndicator.begin(); (p + 1) != multinomialIndicator.end(); )
+		{
+			if (p->second == (p + 1)->second)
+			{
+				p->first += (p + 1)->first;
+				multinomialIndicator.erase(p + 1);
+				// ！忘记了！！迭代器失效问题！
+			}
+			else
+				p++;
+		}
 		initNum++;
 	}
 	Multinomial operator+(const Multinomial& other) const {
@@ -78,6 +92,8 @@ public:
 		string outputString = "";
 		for (auto p : multinomialIndicator)
 		{
+			if (!outputString.empty() && p.first < 0)outputString.pop_back();
+			// !什么逻辑艹
 			if (p.first == 0)continue;
 			if (p.second == 1)outputString += (p.first == 1 ? "" : p.first == -1 ? "-" : to_string(p.first)) + "x" + "+";
 			else if (p.second == 0) outputString += to_string(p.first) + "+";
