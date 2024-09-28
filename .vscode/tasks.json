@@ -12,8 +12,8 @@
                 "-o",
                 "${workspaceFolder}\\out\\Calculator_TUI.exe",
                 "${workspaceFolder}\\lib\\include\\pdcurses.a",
-                "-finput-charset=gbk",
-                "-fexec-charset=gbk",
+                // "-finput-charset=gbk",
+                // "-fexec-charset=gbk",
                 // "${workspaceFolder}\\src\\main.cpp",
                 // "-l",
                 // "pdcurses.a"
