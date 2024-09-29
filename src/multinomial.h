@@ -1,26 +1,52 @@
+#pragma once
+
 #include <iostream>
 #include<sstream>
 #include <vector>
 #include <algorithm>
 #include<cmath>
-// #include"TUI.cpp"
-// !TUI.cppåŒ…å«è‡ªèº«â€¦â€¦
+#include"TUI.h"
+// !TUI.cpp°üº¬×ÔÉí¡­¡­
 using namespace std;
 class Multinomial
 {
 	vector<pair<int, int>> multinomialIndicator;
 public:
 	static int initNum;
-	void init(stringstream input) {
-		if (input.str().empty())return;
+	void init(string input) {
+		if (input.empty())
+		{
+			Dialog_Error("ÊäÈë´íÎó£¡", "ÊäÈëÎª¿Õ£¡");
+			return;
+		}
+		if ([input]() {
+			int n, count = 0;
+			int Iint;
+			stringstream sstream(input);
+			sstream >> n;
+			while (sstream >> Iint)
+			{
+				count++;
+			}
+			return count != 2 * n;
+			}())
+			// !¶îÄäÃûº¯ÊıÍü¼Çµ÷ÓÃÁË¡­¡­
+		{
+			Dialog_Error("ÊäÈë´íÎó£¡", "ÊäÈëÊı¾İµÄÊıÁ¿²»ÕıÈ·£¡");return;
+		}
+		if (!all_of(input.begin(), input.end(), [](char c) {return c == ' ' || isdigit(c); }))
+		{
+			Dialog_Error("ÊäÈë´íÎó£¡", "ÊäÈëÊı¾İ°üº¬·Ç·¨×Ö·û£¡");return;
+		}
 		if (multinomialIndicator.size() > 0)multinomialIndicator.clear();
 		int n;
 		int a, b;
-		input >> n;
+		stringstream sstream(input);
+		sstream >> n;
 		while (n--)
 			// for (int i = 0;i < n;i++)
 		{
-			input >> a >> b;
+			sstream >> a >> b;
 			multinomialIndicator.push_back(make_pair(a, b));
 			// multinomialIndicator.push_back(make_pair(indicators[i * 2], indicators[i * 2 + 1]));
 		}
@@ -33,7 +59,7 @@ public:
 			{
 				p->first += (p + 1)->first;
 				multinomialIndicator.erase(p + 1);
-				// ï¼å¿˜è®°äº†ï¼ï¼è¿­ä»£å™¨å¤±æ•ˆé—®é¢˜ï¼
+				// £¡Íü¼ÇÁË£¡£¡µü´úÆ÷Ê§Ğ§ÎÊÌâ£¡
 			}
 			else
 				p++;
@@ -43,7 +69,7 @@ public:
 	Multinomial operator+(const Multinomial& other) const {
 		Multinomial res;
 		res.multinomialIndicator = multinomialIndicator;
-		// tdå…¶å®é™åºçš„è¯å¯ä»¥å†ä¼˜åŒ–ä¸€ä¸‹â€¦â€¦
+		// tdÆäÊµ½µĞòµÄ»°¿ÉÒÔÔÙÓÅ»¯Ò»ÏÂ¡­¡­
 		for (auto p : other.multinomialIndicator)
 		{
 			auto it = find_if(res.multinomialIndicator.begin(), res.multinomialIndicator.end(), [p](const pair<int, int>& q) {
@@ -142,7 +168,7 @@ public:
 		for (auto p : multinomialIndicator)
 		{
 			if (!outputString.empty() && p.first < 0)outputString.pop_back();
-			// !ä»€ä¹ˆé€»è¾‘è‰¹
+			// !Ê²Ã´Âß¼­Ü³
 			if (p.first == 0)continue;
 			if (p.second == 1)outputString += (p.first == 1 ? "" : p.first == -1 ? "-" : to_string(p.first)) + "x" + "+";
 			else if (p.second == 0) outputString += to_string(p.first) + "+";

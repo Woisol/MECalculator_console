@@ -1,181 +1,25 @@
+#pragma once
+
 #include<iostream>
 #include<cstring>
 #include<sstream>
 #include<vector>
 #include "../lib/include/curses.h"
-#include "multinomial.cpp"
-#include"expression.cpp"
+#include "./Components/TUI_Win.h"
+#include "multinomial.h"
+#include"expression.h"
 using namespace std;
-#define WIN_WIDTH 58
-#define WIN_HEIGHT 22
-bool COLOR_SUPPORT = false;
-void initColor() {
-	if (COLOR_SUPPORT = has_colors())
-	{
-		start_color();
-		// !啊，不支持0的index……
-		init_pair(1, COLOR_WHITE, COLOR_BLACK);		// 白底黑字
-		init_pair(2, COLOR_BLACK, COLOR_YELLOW);	// @黑底黄字
-		init_pair(3, COLOR_YELLOW, COLOR_BLACK);	// 黄底黑字
-		init_pair(4, COLOR_BLACK, COLOR_WHITE);		// ##黑底白字
-		init_pair(5, COLOR_RED, COLOR_WHITE);		// ！红底白字
-		init_pair(6, COLOR_WHITE, COLOR_RED);		// ！白底红字
 
-	}
-	else
-	{
-		cerr << "Err: Color support not available." << endl;
-	}
-}
-int setColor(int pair = 1) {
-	if (COLOR_SUPPORT)
-	{
-		return attron(COLOR_PAIR(pair));
-	}
-	return 0;
-}
-
-//**----------------------------Windows-----------------------------------------------------
-int selectOption = 0;
-// !借鉴了一下React的状态;)
-void SelectOption(string title, int index) {
-	if (index == selectOption)setColor(4);
-	else setColor();
-	title = " " + to_string(index + 1) + ". " + title + " ";
-	mvprintw(WIN_HEIGHT / 2 + index + 1, 10, title.c_str());
-}
-int Win_Select(string title, string description, vector<string> options) {
-	char ch;
-	const int optionsSize = options.size();
-	selectOption %= optionsSize;
-	title = " " + title + " ";
-	while (1)
-	{
-		clear();
-		setColor(2);
-		// box(stdscr, 3, 3);
-		box(stdscr, 15, 15);
-		// box(stdscr, 0, 0);
-		setColor(2);
-		// printw("Welcome to the Calculator!");
-		// ~~这个就行……服了……
-		// !艹是你的WIN_WIDTH太高了导致刷到下面了……你还以为是vsc启动的cmd就不行……啊啊
-		// mvprintw(WIN_HEIGHT / 2 - 1, WIN_WIDTH / 2, "E");
-		// mvprintw(WIN_HEIGHT / 2, WIN_WIDTH / 2, "END");
-		// const char program_title[] = title;
-		mvprintw(WIN_HEIGHT / 2 - 2, WIN_WIDTH / 2 - strlen(title.c_str()) / 2, title.c_str());
-		setColor(3);
-		mvprintw(WIN_HEIGHT / 2, 6, description.c_str());
-
-		for (auto i = 0; i < optionsSize; i++)
-		{
-			SelectOption(options[i], i);
-		}
-
-		ch = getch();
-		if (ch == 2)selectOption = (selectOption + 1) % optionsSize;
-		else if (ch == 3)selectOption = (selectOption - 1 > -1 ? selectOption - 1 : optionsSize - 1) % optionsSize;
-		// !KEY_UP和KEY_DOWN好像不对……
-		else if (ch > 48 && ch <= 48 + optionsSize) { return ch - 49; }
-		else if (ch == 10 || ch == ' ') { return selectOption; }
-
-		// mvprintw(WIN_HEIGHT / 2 + 3, 10, "Mode:	");
-		// move(WIN_HEIGHT /2 + 3, 10)
-		// mvprintw(0, 0, "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*##");
-		// mvprintw(1, 0, "#       Welcome to the Calculator!               #");
-		// mvprintw(2, 0, "#  Please select a mode:                         #");
-		// mvprintw(3, 0, "#  1. 一元稀疏多项式                             #");
-		// mvprintw(4, 0, "#  2. 算法表达式求值                             #");
-		// mvprintw(5, 0, "#                                                 #");
-		// mvprintw(6, 0, "#  当前页面为命令行界面，由C++语言编写。为了更好的体验， #");
-		// mvprintw(7, 0, "#  您可以打开项目中的Calculator_GUI.exe文件，使用图形化  #");
-		// mvprintw(8, 0, "#  界面进行操作。                               #");
-		// mvprintw(9, 0, "#  项目完全独立制作，源码发布在了Github上，希望可以得到您的#");
-		// mvprintw(10, 0, "#  star                                          #");
-		// mvprintw(11, 0, "#                       2024-09-28             #");
-		// mvprintw(12, 0, "#                Copyright @ 2024 Woisol-G     #");
-		// mvprintw(13, 0, "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*##");
-		refresh();             // 刷新屏幕以显示内容
-	}
-}
-// !难以像js那样灵活的把这些放到另一个文件……
-void Dialog_Info(string title, vector<string> info) {
-	clear();
-	setColor(2);
-	box(stdscr, 15, 15);
-	title = " " + title + " ";
-	mvprintw(WIN_HEIGHT / 2 - 2, WIN_WIDTH / 2 - strlen(title.c_str()) / 2, title.c_str());
-	setColor();
-	for (auto i = 0; i < info.size(); i++)
-	{
-		mvprintw(WIN_HEIGHT / 2 + i, 10, info[i].c_str());
-	}
-	mvprintw(WIN_HEIGHT - 2, WIN_WIDTH / 2 - 6, "按任意键返回");
-	refresh();
-	getch();
-}
-void Dialog_Error(string title, string error) {
-	clear();
-	setColor(6);
-	box(stdscr, 15, 15);
-	title = " " + title + " ";
-	mvprintw(WIN_HEIGHT / 2 - 2, WIN_WIDTH / 2 - strlen(title.c_str()) / 2, title.c_str());
-	setColor(5);
-	mvprintw(WIN_HEIGHT / 2, WIN_WIDTH / 2 - strlen(error.c_str()) / 2, error.c_str());
-	mvprintw(WIN_HEIGHT - 2, WIN_WIDTH / 2 - 6, "按任意键返回");
-	refresh();
-	getch();
-}
-
-// ~~ ！可以用stod来直接读取string的数字！
-// !不行用这个就无法像流那样依次读取了……
-stringstream Dialog_Input(string title, bool (*inputCheckFunc)(stringstream&)) {
-	clear();
-	echo();
-	setColor(2);
-	box(stdscr, 15, 15);
-	title = " " + title + " ";
-	mvprintw(WIN_HEIGHT / 2 - 2, WIN_WIDTH / 2 - strlen(title.c_str()) / 2, title.c_str());
-	move(WIN_HEIGHT / 2, 10);
-	setColor();
-	refresh();
-	// !wok我说……忘记refresh了……
-	char input[100];
-	// getline(cin, input);
-
-	// stringstream sStream;
-	// while (inputChar != 10)
-	// {
-	// 	// sStream.
-	// 	sStream << inputChar;
-	// 	inputChar = getch();
-	// }
-	getnstr(input, 100);
-	// !内置的不更香……
-	stringstream checkStream = stringstream(input);
-	// !艹不能直接存储……不然>>了就回不来了……
-	// !额不过还是必须先定义一个不然“非常量引用的初始值必须为左值”
-	// if ((*inputCheckFunc)(stringstream(input)))
-	if ((*inputCheckFunc)(checkStream))
-		return stringstream(input);
-	// ！所以其实原因在于stringstream不能拷贝构造…………
-	Dialog_Error("输入错误！", "输入的数据有问题，再试试吧！");
-	// !wok忘记C++和js'和"是不同的了……
-	return stringstream();
-	// !麻了这里有点绕了……
-	// return input;
-}
-bool multinomialInputCheck(stringstream& sstream) {
-	int n, count;
-	int input;
-	sstream >> n;
-	while (sstream >> input)
-	{
-		count++;
-	}
-	return count == 2 * n;
-
-}
+// bool multinomialInputCheck(stringstream& sstream) {
+// 	int n, count;
+// 	int input;
+// 	sstream >> n;
+// 	while (sstream >> input)
+// 	{
+// 		count++;
+// 	}
+// 	return count == 2 * n;
+// }
 int Multinomial::initNum = 0;
 int Page_Welcome() {
 	// while (1)
@@ -237,16 +81,16 @@ int Page_Multinomial() {
 	while (true)
 	{
 		// const string description = ();
-		vector<string> options;
-		if (Multinomial::initNum == 2) options = { "查看多项式a,b","计算多项式a+b", "计算多项式a-b","重新输入", "返回上一级", "退出" };
-		else options = { "输入多项式" };
+		// vector<string> options;
+		// if (Multinomial::initNum == 2) options = { "查看多项式a,b","计算多项式a+b", "计算多项式a-b","重新输入", "返回上一级", "退出" };
+		// else options = { "输入多项式" };
 		switch (Multinomial::initNum)
 		{
 		case 0:
 			switch (Win_Select(" 一元稀疏多项式 ", "现在还没有输入多项式，请选择输入", { "输入多项式","返回上一级","退出" }))
 			{
 			case 0:
-				multinomials[Multinomial::initNum].init(Dialog_Input("请输入多项式项数n与其系数指数: ", multinomialInputCheck));
+				multinomials[Multinomial::initNum].init(Dialog_Input("请输入多项式项数n与其系数指数: "));
 				// multinomials[Multinomial::initNum].init(Dialog_Input("请输入第二个多项式项数n与其系数指数: ", multinomialInputCheck));
 				// !不行提前预定如果出错会导致奇怪的文案……
 				break;
@@ -257,18 +101,21 @@ int Page_Multinomial() {
 			default:
 				break;
 			}
+			break;
+			// !这里忘记break了……正常输入看不出来但是一无效输入就文案bug了……
 		case 1:
 			switch (Win_Select(" 一元稀疏多项式 ", "当前输入了1个多项式，请选择", { "输入第二个多项式","查看第一个多项式","求值","求导","重新输入第一个多项式","返回上一级","退出" }))
 			{
 			case 0:
-				multinomials[Multinomial::initNum].init(Dialog_Input("请输入第二个多项式项数n与其系数指数: ", multinomialInputCheck));
+				multinomials[Multinomial::initNum].init(Dialog_Input("请输入第二个多项式项数n与其系数指数: "));
 				break;
 			case 1:
 				Dialog_Info("第一个多项式如下：", { multinomials[0].print() });
 				break;
 			case 2:
 				int x;
-				Dialog_Input("输入x = ：", [](stringstream& sstream) { return true; }) >> x;
+				// Dialog_Input("输入x = ：") >> x;
+				x = atoi(Dialog_Input("请输入x = ：").c_str());
 				Dialog_Info(" x = " + to_string(x) + "时，" + multinomials[0].print() + " =", { to_string(multinomials[0].calculate(x)) });
 				break;
 			case 3:
@@ -276,7 +123,7 @@ int Page_Multinomial() {
 				break;
 			case 4:
 				Multinomial::initNum = 0;
-				multinomials[0].init(Dialog_Input("请重新输入第一个多项式项数n与其系数指数: ", multinomialInputCheck));
+				multinomials[0].init(Dialog_Input("请重新输入第一个多项式项数n与其系数指数: "));
 				break;
 			case 5:
 				return 0;
@@ -308,16 +155,16 @@ int Page_Multinomial() {
 				{
 				case 0:
 					Multinomial::initNum = 1;
-					multinomials[0].init(Dialog_Input("请输入第一个多项式项数n与其系数指数: ", multinomialInputCheck));
+					multinomials[0].init(Dialog_Input("请输入第一个多项式项数n与其系数指数: "));
 					break;
 				case 1:
 					Multinomial::initNum = 1;
-					multinomials[1].init(Dialog_Input("请输入第二个多项式项数n与其系数指数: ", multinomialInputCheck));
+					multinomials[1].init(Dialog_Input("请输入第二个多项式项数n与其系数指数: "));
 					break;
 				case 2:
 					Multinomial::initNum = 0;
-					multinomials[0].init(Dialog_Input("请输入第一个多项式项数n与其系数指数: ", multinomialInputCheck));
-					multinomials[1].init(Dialog_Input("请输入第二个多项式项数n与其系数指数: ", multinomialInputCheck));
+					multinomials[0].init(Dialog_Input("请输入第一个多项式项数n与其系数指数: "));
+					multinomials[1].init(Dialog_Input("请输入第二个多项式项数n与其系数指数: "));
 					break;
 				default:
 					break;
@@ -389,28 +236,34 @@ int Page_Expression() {
 	while (true)
 	{
 		if (expression.empty())
+		{
+			int calRes;
 			switch (Win_Select("算法表达式求值计算器", "当前未输入表达式，请选择输入：", { "输入表达式并计算", "返回上一级", "退出" }))
 			{
 			case 0:
-				expression.init(Dialog_Input("请输入算法表达式：", [](stringstream& sstream) { return true; }));
+				expression.init(Dialog_Input("请输入算法表达式："));
 				// !额[&]多个&就不给传唤了……
-				Dialog_Info(expression.getExpression() + " = ", { to_string(expression.calculate()) });
+				calRes = expression.calculate();
+				// !这个变量必须在switch外面声明……不然报错jump to case label（这个报错什么鬼谁懂怎么改……）
+				if (expression.getExpression().empty())continue;
+				Dialog_Info(expression.getExpression() + " = ", { to_string(calRes) });
 				break;
 			case 1:
 				return 0;
 			case 2:
 				return 1;
 			}
+		}
 		else
 			switch (Win_Select("算法表达式求值计算器", "表达式已输入，请选择操作：", { "再次求值",  "重新输入", "返回上一级", "退出" }))
 			{
 			case 0:
-				int x;
 				Dialog_Info(expression.getExpression() + " = ", { to_string(expression.calculate()) });
 				break;
 			case 1:
-				expression.init(Dialog_Input("请重新输入算法表达式，不输入回车取消：", [](stringstream& sstream) { return true; }));
-				Dialog_Info(expression.getExpression() + " = ", { to_string(expression.calculate()) });
+				expression.init(Dialog_Input("请重新输入算法表达式，不输入回车取消："));
+				if (!expression.getExpression().empty())
+					Dialog_Info(expression.getExpression() + " = ", { to_string(expression.calculate()) });
 				break;
 			case 2:
 				return 0;

@@ -1,7 +1,7 @@
 // td 添加test
 // td 分成.h而不是全部用cpp
 #include <iostream>
-#include"TUI.cpp"
+#include"TUI.h"
 using namespace std;
 int main(int argc, char* argv[]) {
 	// !为什么默认是1啊……

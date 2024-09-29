@@ -1,3 +1,6 @@
+#pragma once
+
+#include <iostream>
 #include<string>
 #include<sstream>
 #include<map>
@@ -13,7 +16,7 @@ map<char, bool>priority_addminus = \
 // { {'+', true}, { '-',true }, { '*',true }, { '/',true }, { '^',true }};
 map<char, map<char, bool>> priority_map{ {'+',priority_addminus},{'-',priority_addminus},{'*',priority_muldiv},{'/',priority_muldiv},{'^',priority_pow} };
 // ,{'(',priority_leftquotient},{')',priority_rightquotient}
-// tdåé¢è®°å¾—æ”¹æˆdoubleâ€¦â€¦
+// tdºóÃæ¼ÇµÃ¸Ä³Édouble¡­¡­
 int calSwitch(double num1, char op, double num2)
 {
 	switch (op)
@@ -26,7 +29,7 @@ int calSwitch(double num1, char op, double num2)
 	default: return 0;
 	}
 }
-// td å·²çŸ¥ä¼šå¯¼è‡´å´©æºƒçš„è¾“å…¥ï¼š-1ã€ä¸åŒ¹é…çš„æ‹¬å·
+// dtd ÒÑÖª»áµ¼ÖÂ±ÀÀ£µÄÊäÈë£º-1¡¢²»Æ¥ÅäµÄÀ¨ºÅ
 class Expression
 {
 	string expression;
@@ -35,15 +38,31 @@ class Expression
 public:
 	string getExpression()const { return expression; }
 	bool empty() { return expression.empty(); }
-	void init(stringstream sstream) { sstream >> expression; }
-	void calc() {
+	void init(string input) { expression = input; }
+	bool calc() {
+		// try
+		// {
+		if (opnums.size() < 2)
+		{
+			Dialog_Error("±í´ïÊ½´íÎó£¡", "±í´ïÊ½ÖĞ²Ù×÷ÊıµÄÊıÁ¿²»Æ¥Åä£¡");
+			expression = "";
+			return false;
+		}
 		int b = opnums.top();
+		// !°¡catch²»×¡£¿£¿£¿
 		opnums.pop();
 		int a = opnums.top();
 		opnums.pop();
 		char c = operations.top();
 		operations.pop();
 		opnums.push(calSwitch(a, c, b));
+		// }
+		// catch (exception e)
+		// {
+		// 	Dialog_Error("±í´ïÊ½´íÎó£¡", "±í´ïÊ½ÖĞ¿ÉÄÜ´æÔÚÁ¬ĞøµÄÔËËã·û£¡");
+		// 	cerr << "Error: " << e.what() << endl;
+		// }
+		return true;
 	}
 
 	int calculate() {
@@ -57,11 +76,11 @@ public:
 			if (isdigit(input))
 			{
 				// sstream.putback(c);
-				// // ï¼åŸæ¥æœ‰è¿™ä¸ªå‡½æ•°â€¦â€¦
+				// // £¡Ô­À´ÓĞÕâ¸öº¯Êı¡­¡­
 				// int num;
 				// sstream >> num;
 				// opnums.push(num);
-				// !éº»äº†è¿™æ ·å§‹ç»ˆpushçš„0â€¦â€¦æä¸æ‡‚â€¦â€¦
+				// !ÂéÁËÕâÑùÊ¼ÖÕpushµÄ0¡­¡­¸ã²»¶®¡­¡­
 				int num = input - '0';
 				while (isdigit(input = sstream.get()))
 				{
@@ -76,16 +95,20 @@ public:
 						opnums.push(num * -1);
 					}
 					else if (operations.top() == '+') opnums.push(num);
-					// td é”™è¯¯å¤„ç†
-					else return -1;
+					// dtd ´íÎó´¦Àí
+					else
+					{
+						Dialog_Error("±í´ïÊ½´íÎó£¡", "±í´ïÊ½ÖĞ³öÏÖ¶àÓàµÄ·ûºÅ");
+						return -1;
+					}
 					continue;
 				}
-				// !ç„¶åæ„å¤–å‘ç°è¿™æ ·ä»¥å -1 + 2 * 2ä¹Ÿå¤„ç†å¥½äº†â€¦â€¦
+				// !È»ºóÒâÍâ·¢ÏÖÕâÑùÒÔºó -1 + 2 * 2Ò²´¦ÀíºÃÁË¡­¡­
 				opnums.push(num);
 			}
-			// !FTè¡¥å…¨å‡ æ¬¡éƒ½è¡¥å…¨ä¸å¯¹â€¦â€¦
-			// ~~ä¸‹é¢å‚è€ƒäº†https://blog.csdn.net/qq_41404557/article/details/115207653
-			// !woq https://blog.csdn.net/PengHao666999/article/details/135899403çš„æœ‰å›¾ä¾‹ä»£ç ä¹Ÿæ›´ç®€å•ï¼
+			// !FT²¹È«¼¸´Î¶¼²¹È«²»¶Ô¡­¡­
+			// ~~ÏÂÃæ²Î¿¼ÁËhttps://blog.csdn.net/qq_41404557/article/details/115207653
+			// !woq https://blog.csdn.net/PengHao666999/article/details/135899403µÄÓĞÍ¼Àı´úÂëÒ²¸ü¼òµ¥£¡
 			else if (input == '(')
 			{
 				// if (operations.empty())operations.push(c);continue;
@@ -111,8 +134,8 @@ public:
 			else
 			{
 				while (!operations.empty() && operations.top() != '(' && priority_map[operations.top()][input])
-					// !æ³¨æ„è¿™é‡Œå°±æ˜¯æ¯”è¾ƒæ ˆé¡¶å…ƒç´ æ˜¯å¦æ¯”å½“å‰çš„å¤§â€¦â€¦
-					calc();
+					// !×¢ÒâÕâÀï¾ÍÊÇ±È½ÏÕ»¶¥ÔªËØÊÇ·ñ±Èµ±Ç°µÄ´ó¡­¡­
+					if (!calc())return -1;
 				operations.push(input);
 			}
 			// lastOp = c;
@@ -121,13 +144,15 @@ public:
 		{
 			if (operations.top() == '(' || operations.top() == ')')
 			{
-				// tdåˆ†.håå¼¹å‡ºé”™è¯¯Dialog
+				// dtd·Ö.hºóµ¯³ö´íÎóDialog
+				Dialog_Error("±í´ïÊ½´íÎó£¡", "±í´ïÊ½ÖĞ´æÔÚ²»Æ¥ÅäµÄÀ¨ºÅ");
 				return -1;
 			}
-			if (opnums.size() != operations.size() + 1)
-			{
-				return -1;
-			}
+			// if (opnums.size() != operations.size() + 1)
+			// {
+			// 	return -1;
+			// }
+			// !ÖĞÍ¾¾ÍÒª¼ÆËãµÄ¡­¡­²»ÄÜÔÚÕâÀï¼ì²é¡­¡­
 			// if (opnums.size() < 2)
 			// {
 			// 	if (operations.top() == '+')
