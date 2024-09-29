@@ -26,7 +26,7 @@ int calSwitch(double num1, char op, double num2)
 	default: return 0;
 	}
 }
-// td 已知会导致崩溃的输入：-1
+// td 已知会导致崩溃的输入：-1、不匹配的括号
 class Expression
 {
 	string expression;
@@ -68,6 +68,19 @@ public:
 					num = num * 10 + (input - '0');
 				}
 				sstream.putback(input);
+				if (opnums.size() == 0 && operations.size() == 1)
+				{
+					if (operations.top() == '-')
+					{
+						operations.pop();
+						opnums.push(num * -1);
+					}
+					else if (operations.top() == '+') opnums.push(num);
+					// td 错误处理
+					else return -1;
+					continue;
+				}
+				// !然后意外发现这样以后 -1 + 2 * 2也处理好了……
 				opnums.push(num);
 			}
 			// !FT补全几次都补全不对……
@@ -106,6 +119,24 @@ public:
 		}
 		while (!operations.empty())
 		{
+			if (operations.top() == '(' || operations.top() == ')')
+			{
+				// td分.h后弹出错误Dialog
+				return -1;
+			}
+			if (opnums.size() != operations.size() + 1)
+			{
+				return -1;
+			}
+			// if (opnums.size() < 2)
+			// {
+			// 	if (operations.top() == '+')
+			// 		return opnums.top();
+			// 	else if (operations.top() == '-')
+			// 		return opnums.top() * -1;
+			// 	else
+			// 		return -1;
+			// }
 			int num2 = opnums.top();
 			opnums.pop();
 			int num1 = opnums.top();
