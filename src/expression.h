@@ -33,7 +33,7 @@ int calSwitch(double num1, char op, double num2)
 class Expression
 {
 	string expression;
-	stack<int> operations;
+	stack<char> operations;
 	stack<int> opnums;
 public:
 	string getExpression()const { return expression; }

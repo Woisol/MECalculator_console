@@ -6,11 +6,12 @@
 #include <algorithm>
 #include<cmath>
 #include"TUI.h"
+#include"process.h"
 // !TUI.cpp包含自身……
 using namespace std;
 class Multinomial
 {
-	vector<pair<int, int>> multinomialIndicator;
+	vector<pair<double, double>> multinomialIndicator;
 public:
 	static int initNum;
 	void init(string input) {
@@ -19,28 +20,39 @@ public:
 			Dialog_Error("输入错误！", "输入为空！");
 			return;
 		}
-		if ([input]() {
+		// **检查输入合法性
+		if ([&]() {
 			int n, count = 0;
-			int Iint;
-			stringstream sstream(input);
-			sstream >> n;
-			while (sstream >> Iint)
+			double Idouble;
+			if (!isdigit(input[0]))
 			{
-				count++;
+				Dialog_Error("输入错误！", "输入的n非数");
+				return true;
 			}
-			return count != 2 * n;
-			}())
-			// !额匿名函数忘记调用了……
-		{
-			Dialog_Error("输入错误！", "输入数据的数量不正确！");return;
-		}
-		if (!all_of(input.begin(), input.end(), [](char c) {return c == ' ' || isdigit(c); }))
-		{
-			Dialog_Error("输入错误！", "输入数据包含非法字符！");return;
-		}
+			stringstream sstream(input);
+				sstream >> n;
+				while (sstream >> Idouble)
+				{
+					count++;
+				}
+			if (count != 2 * n)
+			{
+				Dialog_Error("输入错误！", "输入数据的数量不正确或含有非法字符！！");return true;
+			}
+			return false;
+
+			}())return;
+		// !额匿名函数忘记调用了……
+	// {
+	// 	Dialog_Error("输入错误！", "输入数据的数量不正确！");return;
+	// }
+	// if (!all_of(input.begin(), input.end(), [](char c) {return c == ' ' || isdigit(c); }))
+	// {
+	// 	Dialog_Error("输入错误！", "输入数据包含非法字符！");return;
+	// }
 		if (multinomialIndicator.size() > 0)multinomialIndicator.clear();
 		int n;
-		int a, b;
+		double a, b;
 		stringstream sstream(input);
 		sstream >> n;
 		while (n--)
@@ -140,10 +152,14 @@ public:
 
 		return res;
 	}
-	int calculate(int x) const {
+	double calculate(int x) const {
 		int res = 0;
 		for (auto p : multinomialIndicator)
 		{
+			if (p.second < 0 && x < 0)
+			{
+				Dialog_Error("数学错误！", "输入的x不在定义域内！");res = -1;return res;
+			}
 			res += p.first * pow(x, p.second);
 		}
 		return res;
@@ -158,7 +174,9 @@ public:
 			}
 			else if (p.second == -1)
 			{
-				res.multinomialIndicator.push_back(make_pair(p.first, 0));
+				Dialog_Error("输入错误", "输入了特殊求导的x^-1，暂不支持该多项式求导！");
+				res.multinomialIndicator.clear();
+				return res;
 			}
 		}
 		return res;
@@ -170,9 +188,9 @@ public:
 			if (!outputString.empty() && p.first < 0)outputString.pop_back();
 			// !什么逻辑艹
 			if (p.first == 0)continue;
-			if (p.second == 1)outputString += (p.first == 1 ? "" : p.first == -1 ? "-" : to_string(p.first)) + "x" + "+";
-			else if (p.second == 0) outputString += to_string(p.first) + "+";
-			else outputString += (p.first == 1 ? "" : p.first == -1 ? "-" : to_string(p.first)) + "x^" + to_string(p.second) + "+";
+			if (p.second == 1)outputString += (p.first == 1 ? "" : p.first == -1 ? "-" : better_double_to_string(p.first)) + "x" + "+";
+			else if (p.second == 0) outputString += better_double_to_string(p.first) + "+";
+			else outputString += (p.first == 1 ? "" : p.first == -1 ? "-" : better_double_to_string(p.first)) + "x^" + better_double_to_string(p.second) + "+";
 		}
 		if (outputString.empty())return "0";
 		outputString.pop_back();

@@ -113,9 +113,9 @@ int Page_Multinomial() {
 				Dialog_Info("第一个多项式如下：", { multinomials[0].print() });
 				break;
 			case 2:
-				int x;
+				double x;
 				// Dialog_Input("输入x = ：") >> x;
-				x = atoi(Dialog_Input("请输入x = ：").c_str());
+				x = atof(Dialog_Input("请输入x = ：").c_str());
 				Dialog_Info(" x = " + to_string(x) + "时，" + multinomials[0].print() + " =", { to_string(multinomials[0].calculate(x)) });
 				break;
 			case 3:
