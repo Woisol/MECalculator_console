@@ -71,7 +71,7 @@ int Page_Welcome() {
 
 	// }
 
-	return Win_Select("欢迎使用本软件!", " 使用上下方向键选择一个模式: ", { "一元稀疏多项式 ", "算法表达式求值","关于此软件作者","退出" });
+	return Win_Select("欢迎使用本软件!", "按↑↓或对应的数字键选择模式:", { "一元稀疏多项式 ", "算法表达式求值","关于此软件作者","退出" });
 	// !可以直接用类似js对象的形式隐式转换成vector！wok这下方便了
 }
 
@@ -241,7 +241,7 @@ int Page_Expression() {
 			switch (Win_Select("算法表达式求值计算器", "当前未输入表达式，请选择输入：", { "输入表达式并计算", "返回上一级", "退出" }))
 			{
 			case 0:
-				expression.init(Dialog_Input("请输入算法表达式："));
+				expression.init(Dialog_Input("请输入算法表达式，注意数字和符号之间不能有空格："));
 				// !额[&]多个&就不给传唤了……
 				calRes = expression.calculate();
 				// !这个变量必须在switch外面声明……不然报错jump to case label（这个报错什么鬼谁懂怎么改……）
@@ -261,7 +261,7 @@ int Page_Expression() {
 				Dialog_Info(expression.getExpression() + " = ", { to_string(expression.calculate()) });
 				break;
 			case 1:
-				expression.init(Dialog_Input("请重新输入算法表达式，不输入回车取消："));
+				expression.init(Dialog_Input("请重新输入算法表达式，不输入任何内容按下回车取消："));
 				if (!expression.getExpression().empty())
 					Dialog_Info(expression.getExpression() + " = ", { to_string(expression.calculate()) });
 				break;

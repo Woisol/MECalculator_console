@@ -43,7 +43,7 @@ void SelectOption(string title, int index) {
 	if (index == selectOption)setColor(4);
 	else setColor();
 	title = " " + to_string(index + 1) + ". " + title + " ";
-	mvprintw(WIN_HEIGHT / 2 + index + 1, 10, title.c_str());
+	mvprintw(WIN_HEIGHT / 2 + index + 1, 15, title.c_str());
 }
 int Win_Select(string title, string description, vector<string> options) {
 	char ch;
@@ -66,7 +66,11 @@ int Win_Select(string title, string description, vector<string> options) {
 		// const char program_title[] = title;
 		mvprintw(WIN_HEIGHT / 2 - 2, WIN_WIDTH / 2 - strlen(title.c_str()) / 2, title.c_str());
 		setColor(3);
-		mvprintw(WIN_HEIGHT / 2, 6, description.c_str());
+		mvprintw(WIN_HEIGHT / 2, 10, description.c_str());
+
+		const char* COPYRIGHT = "Copyright @ 2024 Woisol-G";
+		mvprintw(WIN_HEIGHT - 1, WIN_WIDTH - strlen(COPYRIGHT) - 1, COPYRIGHT);
+		// !害算了……
 
 		for (auto i = 0; i < optionsSize; i++)
 		{
@@ -109,7 +113,7 @@ void Dialog_Info(string title, vector<string> info) {
 	setColor();
 	for (auto i = 0; i < info.size(); i++)
 	{
-		mvprintw(WIN_HEIGHT / 2 + i, 10, info[i].c_str());
+		mvprintw(WIN_HEIGHT / 2 + i, WIN_WIDTH / 2 - strlen(info[i].c_str()) / 2, info[i].c_str());
 	}
 	mvprintw(WIN_HEIGHT - 2, WIN_WIDTH / 2 - 6, "按任意键返回");
 	refresh();
