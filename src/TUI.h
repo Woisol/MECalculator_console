@@ -116,7 +116,7 @@ int Page_Multinomial() {
 				double x;
 				// Dialog_Input("输入x = ：") >> x;
 				x = atof(Dialog_Input("请输入x = ：").c_str());
-				Dialog_Info(" x = " + to_string(x) + "时，" + multinomials[0].print() + " =", { to_string(multinomials[0].calculate(x)) });
+				Dialog_Info(" x = " + better_double_to_string(x) + "时，" + multinomials[0].print() + " =", { better_double_to_string(multinomials[0].calculate(x)) });
 				break;
 			case 3:
 				Dialog_Info(multinomials[0].print() + "的导数为：", { multinomials[0].derivative().print() });

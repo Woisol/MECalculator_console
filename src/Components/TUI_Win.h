@@ -8,7 +8,7 @@
 // #include <algorithm>
 using namespace std;
 #define WIN_WIDTH 58
-#define WIN_HEIGHT 22
+#define WIN_HEIGHT 28
 bool COLOR_SUPPORT = false;
 void initColor() {
 	if (COLOR_SUPPORT = has_colors())

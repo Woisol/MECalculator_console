@@ -24,9 +24,9 @@ public:
 		if ([&]() {
 			int n, count = 0;
 			double Idouble;
-			if (!isdigit(input[0]))
+			if (!isdigit(input[0]) || input[0] == '0')
 			{
-				Dialog_Error("输入错误！", "输入的n非数");
+				Dialog_Error("输入错误！", "输入的n非正整数");
 				return true;
 			}
 			stringstream sstream(input);
@@ -51,6 +51,11 @@ public:
 	// 	Dialog_Error("输入错误！", "输入数据包含非法字符！");return;
 	// }
 		if (multinomialIndicator.size() > 0)multinomialIndicator.clear();
+		// if (input[0] == '0')
+		// {
+		// 	multinomialIndicator.push_back(make_pair(0, 0));
+		// 	return;
+		// }
 		int n;
 		double a, b;
 		stringstream sstream(input);
