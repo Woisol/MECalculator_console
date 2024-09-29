@@ -1,56 +1,120 @@
 #include<string>
 #include<sstream>
+#include<map>
+#include<cmath>
 #include<stack>
 using namespace std;
+map<char, bool>priority_addminus = \
+{ {'+', true}, { '-',true }, { '*',false }, { '/',false }, { '^',false }}, priority_muldiv = \
+{ {'+', true}, { '-',true }, { '*',true }, { '/',true }, { '^',false }}, priority_pow = \
+{ {'+', true}, { '-',true }, { '*',true }, { '/',true }, { '^',true }};
+// , priority_leftquotient = \
+// { {'+', false}, { '-',false }, { '*',false }, { '/',false }, { '^',false } }, priority_rightquotient = \
+// { {'+', true}, { '-',true }, { '*',true }, { '/',true }, { '^',true }};
+map<char, map<char, bool>> priority_map{ {'+',priority_addminus},{'-',priority_addminus},{'*',priority_muldiv},{'/',priority_muldiv},{'^',priority_pow} };
+// ,{'(',priority_leftquotient},{')',priority_rightquotient}
+// td后面记得改成double……
+int calSwitch(double num1, char op, double num2)
+{
+	switch (op)
+	{
+	case '+': return num1 + num2;
+	case '-': return num1 - num2;
+	case '*': return num1 * num2;
+	case '/': return num1 / num2;
+	case '^': return pow(num1, num2);
+	default: return 0;
+	}
+}
+// td 已知会导致崩溃的输入：-1
 class Expression
 {
 	string expression;
+	stack<int> operations;
+	stack<int> opnums;
 public:
 	string getExpression()const { return expression; }
 	bool empty() { return expression.empty(); }
 	void init(stringstream sstream) { sstream >> expression; }
+	void calc() {
+		int b = opnums.top();
+		opnums.pop();
+		int a = opnums.top();
+		opnums.pop();
+		char c = operations.top();
+		operations.pop();
+		opnums.push(calSwitch(a, c, b));
+	}
+
 	int calculate() {
-		stack<int> operaters;
-		for (int i = 0;i < expression.length();i++)
+		char input;
+		stringstream sstream(expression);
+		while (!operations.empty())operations.pop();
+		while (!opnums.empty())opnums.pop();
+
+		while (sstream.get(input))
 		{
-			if (expression[i] >= '0' && expression[i] <= '9')
+			if (isdigit(input))
 			{
-				int num = 0;
-				while (i < expression.length() && expression[i] >= '0' && expression[i] <= '9')
+				// sstream.putback(c);
+				// // ！原来有这个函数……
+				// int num;
+				// sstream >> num;
+				// opnums.push(num);
+				// !麻了这样始终push的0……搞不懂……
+				int num = input - '0';
+				while (isdigit(input = sstream.get()))
 				{
-					num = num * 10 + expression[i] - '0';
-					i++;
+					num = num * 10 + (input - '0');
 				}
-				operaters.push(num);
+				sstream.putback(input);
+				opnums.push(num);
 			}
-			else if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*' || expression[i] == '/')
+			// !FT补全几次都补全不对……
+			// ~~下面参考了https://blog.csdn.net/qq_41404557/article/details/115207653
+			// !woq https://blog.csdn.net/PengHao666999/article/details/135899403的有图例代码也更简单！
+			else if (input == '(')
 			{
-				int op2 = operaters.top();
-				operaters.pop();
-				int op1 = operaters.top();
-				operaters.pop();
-				if (expression[i] == '+')
-				{
-					operaters.push(op1 + op2);
-				}
-				else if (expression[i] == '-')
-				{
-					operaters.push(op1 - op2);
-				}
-				else if (expression[i] == '*')
-				{
-					operaters.push(op1 * op2);
-				}
-				else if (expression[i] == '/')
-				{
-					operaters.push(op1 / op2);
-				}
+				// if (operations.empty())operations.push(c);continue;
+				// while (!operations.empty() && priority_map[operations.top()][c] && priority_map[operations.top()][c] <= priority_map[operations.top()][c])
+				// {
+				// 	int num2 = opnums.top();
+				// 	opnums.pop();
+				// 	int num1 = opnums.top();
+				// 	opnums.pop();
+				// 	char op = operations.top();
+				// 	operations.pop();
+				// 	opnums.push(calSwitch(num1, op, num2));
+				// }
+				// operations.push(c);
+
+				operations.push(input);
+			}
+			else if (input == ')')
+			{
+				while (operations.top() != '(')calc();
+				operations.pop();
 			}
 			else
 			{
-				continue;
+				while (!operations.empty() && operations.top() != '(' && priority_map[operations.top()][input])
+					// !注意这里就是比较栈顶元素是否比当前的大……
+					calc();
+				operations.push(input);
 			}
+			// lastOp = c;
 		}
-		return operaters.top();
+		while (!operations.empty())
+		{
+			int num2 = opnums.top();
+			opnums.pop();
+			int num1 = opnums.top();
+			opnums.pop();
+			char op = operations.top();
+			operations.pop();
+			opnums.push(calSwitch(num1, op, num2));
+		}
+		return opnums.top();
 	}
+
 }expression;

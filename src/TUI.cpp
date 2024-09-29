@@ -127,6 +127,8 @@ void Dialog_Error(string title, string error) {
 	getch();
 }
 
+// ~~ ！可以用stod来直接读取string的数字！
+// !不行用这个就无法像流那样依次读取了……
 stringstream Dialog_Input(string title, bool (*inputCheckFunc)(stringstream&)) {
 	clear();
 	echo();
@@ -407,7 +409,7 @@ int Page_Expression() {
 				Dialog_Info(expression.getExpression() + " = ", { to_string(expression.calculate()) });
 				break;
 			case 1:
-				expression.init(Dialog_Input("请重新输入算法表达式：", [](stringstream& sstream) { return true; }));
+				expression.init(Dialog_Input("请重新输入算法表达式，不输入回车取消：", [](stringstream& sstream) { return true; }));
 				Dialog_Info(expression.getExpression() + " = ", { to_string(expression.calculate()) });
 				break;
 			case 2:
