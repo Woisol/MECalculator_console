@@ -10,7 +10,7 @@
                 // !麻了是在这里指定编译的文件的……${file}值得就是当前活动文件
                 "${workspaceFolder}\\src\\main.cpp",
                 "-o",
-                "${workspaceFolder}\\out\\Calculator_TUI.exe",
+                "${workspaceFolder}\\out\\calculate.exe",
                 "${workspaceFolder}\\lib\\include\\pdcurses.a",
                 // "-finput-charset=gbk",
                 // "-fexec-charset=gbk",

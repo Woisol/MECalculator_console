@@ -10,6 +10,7 @@ using namespace std;
 #define WIN_WIDTH 58
 #define WIN_HEIGHT 28
 bool COLOR_SUPPORT = false;
+bool cmdMode = false;
 void initColor() {
 	if (COLOR_SUPPORT = has_colors())
 	{
@@ -117,7 +118,8 @@ void Dialog_Info(string title, vector<string> info) {
 	}
 	mvprintw(WIN_HEIGHT - 2, WIN_WIDTH / 2 - 6, "按任意键返回");
 	refresh();
-	getch();
+	if (!cmdMode)
+		getch();
 }
 void Dialog_Error(string title, string error) {
 	clear();
@@ -129,7 +131,8 @@ void Dialog_Error(string title, string error) {
 	mvprintw(WIN_HEIGHT / 2, WIN_WIDTH / 2 - strlen(error.c_str()) / 2, error.c_str());
 	mvprintw(WIN_HEIGHT - 2, WIN_WIDTH / 2 - 6, "按任意键返回");
 	refresh();
-	getch();
+	if (!cmdMode)
+		getch();
 }
 
 // ~~ ！可以用stod来直接读取string的数字！

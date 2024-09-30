@@ -128,8 +128,22 @@ public:
 			}
 			else if (input == ')')
 			{
-				while (operations.top() != '(')calc();
-				operations.pop();
+				if (operations.empty())
+				{
+					Dialog_Error("表达式错误！", "表达式中存在不匹配的括号");
+					return -1;
+				}
+				while (!operations.empty() && operations.top() != '(')
+				{
+					if (operations.size() == 1 && operations.top() != '(')
+					{
+						Dialog_Error("表达式错误！", "表达式中存在不匹配的括号");
+						return -1;
+					}
+					calc();
+				}
+				if (!operations.empty())
+					operations.pop();
 			}
 			else
 			{

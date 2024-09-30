@@ -2,6 +2,7 @@
 // td 分成.h而不是全部用cpp
 #include <iostream>
 #include"TUI.h"
+#include"./Components/TUI_Win.h"
 #include"multinomial.h"
 #include"expression.h"
 using namespace std;
@@ -54,9 +55,11 @@ int main(int argc, char* argv[]) {
 		}
 		endwin();              // 结束ncurses模式
 	}
-	else if (argc > 1 && strcmp(argv[1], "--cmd") == 0)
+	else if (argc > 1)
+		//  && strcmp(argv[1], "--cmd") == 0
 		// ！！！！！！woc……strcmp……艹而且是 == 0……
 	{
+		cmdMode = true;
 		// cout << "cmd mode" << endl;
 		// for (int i = 0;i < argc;i++)
 		// {
@@ -66,94 +69,108 @@ int main(int argc, char* argv[]) {
 		string input, input2;
 		bool isNext = false;
 		int x;
-		if (strcmp(argv[2], "--help") == 0)
+		if (strcmp(argv[1], "--help") == 0)
 		{
-			cout << "--cmd [mode=1(Multinomial)|2(Expression)] [...option] [...input]" << endl << \
-				"mode=1:	[option=1(calculate)|2(derivative)|3(add)|4(sub)|5(mul)] [x?] [input1] [-?] [input2?]" << endl << \
-				"mode=2:	[input]" << endl;
+			cout << "[-M(Multinomial)|-E(Expression)] [...option] [...input]" << endl << \
+				"\t" << endl << \
+				"-M:[option=--cal(calculate)|--de(derivative)|--add(add)|" << endl << \
+				"\t--sub(sub)|--mul(mul)] [x?] [input1] [input2?]" << endl << \
+				"-E:[input]" << endl;
 			return 0;
 		}
-		switch (*argv[2])
+		// !额写成''了就char const too long for its type……
+		if (strcmp(argv[1], "-M") == 0)
 		{
-			// !额写成''了就char const too long for its type……
-		case '1':
-			switch (*argv[3])
+			if (strcmp(argv[2], "--cal") == 0)
 			{
-			case '1':
 				// **main.exe --cmd 1 1 x 1 1 1
-				x = stoi(argv[4]);
-				for (int i = 5;i < argc;i++)
-				{
-					input += argv[i];input += " ";
-				}
+				x = stoi(argv[3]);
+				// for (int i = 5;i < argc;i++)
+				// {
+				// 	input += argv[i];input += " ";
+				// }
+				input = argv[4];
 				multinomials[0].init(input);
 				cout << multinomials[0].calculate(x) << endl;
-				break;
-			case '2':
+			}
+			else if (strcmp(argv[2], "--de") == 0)
+			{
 				// **main.exe --cmd 1 2 1 1 1
-				for (int i = 4;i < argc;i++)
-				{
-					input += argv[i];input += " ";
-				}
+				// for (int i = 3;i < argc;i++)
+				// {
+				// 	input += argv[i];input += " ";
+				// }
+				input = argv[3];
 				multinomials[0].init(input);
 				res = multinomials[0].derivative();
 				cout << res.print() << endl;
-				break;
-			case '3':
+			}
+			else if (strcmp(argv[2], "--add") == 0)
+			{
 				// **main.exe --cmd 1 3 1 1 1 ; 1 1 2
-				for (int i = 4;i < argc;i++)
-				{
-					if (strcmp(argv[i], "-") == 0) { isNext = true; continue; }
-					if (isNext) { input2 += argv[i];input2 += " "; }
-					else { input += argv[i];input += " "; }
-				}
+				// for (int i = 3;i < argc;i++)
+				// {
+				// 	if (strcmp(argv[i], "-") == 0) { isNext = true; continue; }
+				// 	if (isNext) { input2 += argv[i];input2 += " "; }
+				// 	else { input += argv[i];input += " "; }
+				// }
+				input = argv[3];
+				input2 = argv[4];
 				multinomials[0].init(input);
 				multinomials[1].init(input2);
 				res = multinomials[0] + (multinomials[1]);
 				cout << res.print() << endl;
-				break;
-			case '4':
+			}
+			else if (strcmp(argv[2], "--sub") == 0)
+			{
 				// **main.exe --cmd 1 4 1 1 1 ; 1 1 2
 				isNext = false;
-				for (int i = 4;i < argc;i++)
-				{
-					if (strcmp(argv[i], "-") == 0) { isNext = true; continue; }
-					if (isNext) { input2 += argv[i];input2 += " "; }
-					else { input += argv[i];input += " "; }
-				}
+				// for (int i = 3;i < argc;i++)
+				// {
+				// 	if (strcmp(argv[i], "-") == 0) { isNext = true; continue; }
+				// 	if (isNext) { input2 += argv[i];input2 += " "; }
+				// 	else { input += argv[i];input += " "; }
+				// }
+				input = argv[3];
+				input2 = argv[4];
 				multinomials[0].init(input);
 				multinomials[1].init(input2);
 				res = multinomials[0] - (multinomials[1]);
 				cout << res.print() << endl;
-				break;
-			case '5':
+			}
+			else if (strcmp(argv[2], "--mul") == 0)
+			{
 				// **main.exe --cmd 1 5 1 1 1 ; 1 1 2
 				isNext = false;
-				for (int i = 4;i < argc;i++)
-				{
-					if (strcmp(argv[i], "-") == 0) { isNext = true; continue; }
-					if (isNext) { input2 += argv[i];input2 += " "; }
-					else { input += argv[i];input += " "; }
-				}
+				// for (int i = 3;i < argc;i++)
+				// {
+				// 	if (strcmp(argv[i], "-") == 0) { isNext = true; continue; }
+				// 	if (isNext) { input2 += argv[i];input2 += " "; }
+				// 	else { input += argv[i];input += " "; }
+				// }
+				input = argv[3];
+				input2 = argv[4];
 				multinomials[0].init(input);
 				multinomials[1].init(input2);
 				res = multinomials[0] * (multinomials[1]);
 				cout << res.print() << endl;
-				break;
-			default:
-				cout << "Unknown Mode" << endl;
-				break;
 			}
-			break;
-		case '2':
+			else
+			{
+				cout << "Unknown Mode" << endl;
+			}
+		}
+		else if (strcmp(argv[1], "-E") == 0)
+		{
 			// **main.exe --cmd 2 90-(5-4)*2-2^3
 			// input = to_string(argv[3]);
-			input = argv[3];
+			input = argv[2];
 			// !az完全可以直接赋值……不然to_string其实不能把char[]转过去的……
 			expression.init(input);
 			cout << expression.calculate() << endl;
-			break;
-		default:
+		}
+		else
+		{
 			cout << "Unknown command" << endl;
 		}
 		// system("pause");

@@ -8,7 +8,7 @@
 			"name": "g++ build and debug active file",
 			"type": "cppdbg",
 			"request": "launch",
-			"program": "${workspaceFolder}\\out\\Calculator_TUI.exe",
+			"program": "${workspaceFolder}\\out\\calculate.exe",
 			"args": [
 				// "--cmd",
 				// "1",
@@ -23,6 +23,8 @@
 				// "1",
 				// "2",
 				// "90-(5-4)*2-2^3",
+				"-E",
+				"20+3*2)"
 			],
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",
