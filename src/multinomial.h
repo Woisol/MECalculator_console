@@ -157,7 +157,7 @@ public:
 
 		return res;
 	}
-	double calculate(int x) const {
+	double calculate(double x) const {
 		double res = 0;
 		for (auto p : multinomialIndicator)
 		{

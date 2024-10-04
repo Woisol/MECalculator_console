@@ -4,12 +4,13 @@
 2024-09-29
 
 ## Introduction
-本程序使用C++和pdCurses库实现了一个简单的一元稀疏多项式计算器以及表达式求值，用户可以输入多项式或数学表达式，程序将对其进行解析并计算结果。
+本项目使用C++和pdCurses库实现了一个简单的一元稀疏多项式计算器以及表达式求值，用户可以输入多项式或数学表达式，程序将对其进行解析并计算结果。
+项目同时使用Flutter构建了一个输入辅助软件，
 
 ### TUI界面
 本程序使用pdCurses库实现了简单的TUI界面，用户通过键盘进行操作。\
 注意由于pdCurses库的特性，UI显示效果在不同的机器上可能有偏差，即使在本机也由于pdCurses对中文适配不佳的问题导致边框绘制存在问题。\
-如果需要更好的UI效果请使用项目根目录下的`Calculator_GUI.exe`文件。
+如果需要更好的UI效果与输入体验，请使用项目根目录下使用Flutter构建的`MECalculator.exe`文件。
 
 ><img src="./Project/Img/Home.png" width="300">
 >
@@ -58,6 +59,10 @@
 ><img src="./Project/Img/Expression_input_check_2.png" width="300">
 >
 > 支持非法输入提示
+
+### 输入辅助软件
+
+本项目的输入辅助软件使用Flutter开发，提供了更为优雅的输入界面以及更简便的输入方式，详情请查看MECalculator项目下的[README.md]()
 
 ## 原理
 ### TUI界面

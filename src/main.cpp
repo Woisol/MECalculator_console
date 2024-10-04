@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
 		// cout << endl;
 		string input, input2;
 		bool isNext = false;
-		int x;
+		double x;
 		if (strcmp(argv[1], "--help") == 0)
 		{
 			cout << "[-M(Multinomial)|-E(Expression)] [...option] [...input]" << endl << \
@@ -90,7 +90,7 @@ int main(int argc, char* argv[]) {
 					return -1;
 				}
 				// **main.exe --cmd 1 1 x 1 1 1
-				x = stoi(argv[3]);
+				x = atof(argv[3]);
 				// for (int i = 5;i < argc;i++)
 				// {
 				// 	input += argv[i];input += " ";
