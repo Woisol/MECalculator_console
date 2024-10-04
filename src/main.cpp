@@ -84,6 +84,11 @@ int main(int argc, char* argv[]) {
 		{
 			if (strcmp(argv[2], "--cal") == 0)
 			{
+				if (argc < 5)
+				{
+					cout << "err: 未输入足够参数，请检查是否输入了x" << endl;
+					return -1;
+				}
 				// **main.exe --cmd 1 1 x 1 1 1
 				x = stoi(argv[3]);
 				// for (int i = 5;i < argc;i++)
