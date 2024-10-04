@@ -161,7 +161,7 @@ public:
 		double res = 0;
 		for (auto p : multinomialIndicator)
 		{
-			if (p.second < 0 && x < 0)
+			if (p.second < 1 && p.second > -1 && x < 0 || p.second < 0 && x == 0)
 			{
 				Dialog_Error("数学错误！", "输入的x不在定义域内！");res = -1;return res;
 			}
