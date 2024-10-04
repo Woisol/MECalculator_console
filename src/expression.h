@@ -1,4 +1,5 @@
 #pragma once
+// td (-2*3)无法计算
 
 #include <iostream>
 #include<string>
@@ -16,8 +17,8 @@ map<char, bool>priority_addminus = \
 // { {'+', true}, { '-',true }, { '*',true }, { '/',true }, { '^',true }};
 map<char, map<char, bool>> priority_map{ {'+',priority_addminus},{'-',priority_addminus},{'*',priority_muldiv},{'/',priority_muldiv},{'^',priority_pow} };
 // ,{'(',priority_leftquotient},{')',priority_rightquotient}
-// td后面记得改成double……
-int calSwitch(double num1, char op, double num2)
+// dtd后面记得改成double……
+double calSwitch(double num1, char op, double num2)
 {
 	switch (op)
 	{
@@ -34,7 +35,7 @@ class Expression
 {
 	string expression;
 	stack<char> operations;
-	stack<int> opnums;
+	stack<double> opnums;
 public:
 	string getExpression()const { return expression; }
 	bool empty() { return expression.empty(); }
@@ -48,10 +49,10 @@ public:
 			expression = "";
 			return false;
 		}
-		int b = opnums.top();
+		double b = opnums.top();
 		// !啊catch不住？？？
 		opnums.pop();
-		int a = opnums.top();
+		double a = opnums.top();
 		opnums.pop();
 		char c = operations.top();
 		operations.pop();
@@ -67,6 +68,11 @@ public:
 
 	int calculate() {
 		char input;
+		if (expression.find('.') != string::npos)
+		{
+			Dialog_Error("表达式错误！", "表达式计算暂不支持小数！");
+			return -1;
+		}
 		stringstream sstream(expression);
 		while (!operations.empty())operations.pop();
 		while (!opnums.empty())opnums.pop();

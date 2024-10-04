@@ -1,5 +1,6 @@
 // td 添加test
-// td 分成.h而不是全部用cpp
+// dtd 分成.h而不是全部用cpp
+// dtd 多项式求值不支持小数……
 #include <iostream>
 #include"TUI.h"
 #include"./Components/TUI_Win.h"

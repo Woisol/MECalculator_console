@@ -158,7 +158,7 @@ public:
 		return res;
 	}
 	double calculate(int x) const {
-		int res = 0;
+		double res = 0;
 		for (auto p : multinomialIndicator)
 		{
 			if (p.second < 0 && x < 0)

@@ -122,6 +122,11 @@ void Dialog_Info(string title, vector<string> info) {
 		getch();
 }
 void Dialog_Error(string title, string error) {
+	if (cmdMode)
+	{
+		cout << "err: " << error << endl;
+		return;
+	}
 	clear();
 	setColor(6);
 	box(stdscr, 15, 15);
