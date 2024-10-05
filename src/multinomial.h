@@ -6,8 +6,7 @@
 #include <algorithm>
 #include<cmath>
 #include"TUI.h"
-#include"process.h"
-// !TUI.cpp包含自身……
+#include"utils.h"
 using namespace std;
 class Multinomial
 {
@@ -42,30 +41,15 @@ public:
 			return false;
 
 			}())return;
-		// !额匿名函数忘记调用了……
-	// {
-	// 	Dialog_Error("输入错误！", "输入数据的数量不正确！");return;
-	// }
-	// if (!all_of(input.begin(), input.end(), [](char c) {return c == ' ' || isdigit(c); }))
-	// {
-	// 	Dialog_Error("输入错误！", "输入数据包含非法字符！");return;
-	// }
 		if (multinomialIndicator.size() > 0)multinomialIndicator.clear();
-		// if (input[0] == '0')
-		// {
-		// 	multinomialIndicator.push_back(make_pair(0, 0));
-		// 	return;
-		// }
 		int n;
 		double a, b;
 		stringstream sstream(input);
 		sstream >> n;
 		while (n--)
-			// for (int i = 0;i < n;i++)
 		{
 			sstream >> a >> b;
 			multinomialIndicator.push_back(make_pair(a, b));
-			// multinomialIndicator.push_back(make_pair(indicators[i * 2], indicators[i * 2 + 1]));
 		}
 		sort(multinomialIndicator.begin(), multinomialIndicator.end(), [](const pair<int, int>& p, const pair<int, int>& q) {
 			return p.second > q.second;
@@ -76,7 +60,6 @@ public:
 			{
 				p->first += (p + 1)->first;
 				multinomialIndicator.erase(p + 1);
-				// ！忘记了！！迭代器失效问题！
 			}
 			else
 				p++;
@@ -191,7 +174,6 @@ public:
 		for (auto p : multinomialIndicator)
 		{
 			if (!outputString.empty() && p.first < 0)outputString.pop_back();
-			// !什么逻辑艹
 			if (p.first == 0)continue;
 			if (p.second == 1)outputString += (p.first == 1 ? "" : p.first == -1 ? "-" : better_double_to_string(p.first)) + "x" + "+";
 			else if (p.second == 0) outputString += better_double_to_string(p.first) + "+";
@@ -205,8 +187,5 @@ public:
 		multinomialIndicator.clear();
 	}
 };
-// Multinomial::initNum = 0;
 Multinomial multinomials[2] = { Multinomial(), Multinomial() };
 Multinomial res;
-// void mutinomial() {
-// }
