@@ -1,5 +1,7 @@
 #pragma once
 // td (-2*3)无法计算
+// td (20+2)*(6/2)无法计算
+// td /0未报错
 
 #include <iostream>
 #include<string>
@@ -21,7 +23,14 @@ double calSwitch(double num1, char op, double num2)
 	case '+': return num1 + num2;
 	case '-': return num1 - num2;
 	case '*': return num1 * num2;
-	case '/': return num1 / num2;
+	case '/': {
+		if (num2 == 0)
+		{
+			Dialog_Error("表达式错误！", "除数不能为0！");
+			return -1;
+		}
+		return num1 / num2;
+	}
 	case '^': return pow(num1, num2);
 	default: return 0;
 	}
@@ -81,7 +90,7 @@ public:
 						operations.pop();
 						opnums.push(num * -1);
 					}
-					else if (operations.top() == '+') opnums.push(num);
+					else if (operations.top() == '+' || operations.top() == '(') opnums.push(num);
 					// dtd 错误处理
 					else
 					{
